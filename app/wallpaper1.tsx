@@ -17,7 +17,7 @@ import {
 const length = 7;
 const STRIPES = new Array(length).fill(0).map((_, i) => i);
 
-const Wallpaper = () => {
+const Wallpaper1 = () => {
   const { height, width: wWidth } = useWindowDimensions();
   const width = wWidth / length;
   const origin = vec(width / 2, height / 2);
@@ -76,6 +76,6 @@ const Wallpaper = () => {
   );
 };
 
-export default Wallpaper;
+export default Wallpaper1;
 
 const styles = StyleSheet.create({});

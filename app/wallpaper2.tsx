@@ -1,26 +1,27 @@
-import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import React from "react";
 import {
   Canvas,
   Fill,
-  Group,
-  interpolate,
   LinearGradient,
-  Mask,
-  rect,
-  Rect,
-  Shadow,
-  Turbulence,
+  Path,
+  Skia,
+  SweepGradient,
   vec,
 } from "@shopify/react-native-skia";
 
-const length = 7;
-const STRIPES = new Array(length).fill(0).map((_, i) => i);
-
-const Wallpaper = () => {
-  const { height, width: wWidth } = useWindowDimensions();
-  const width = wWidth / length;
+const Wallpaper2 = () => {
+  const { width, height } = Dimensions.get("window");
   const origin = vec(width / 2, height / 2);
+  const halfCircle = Skia.Path.Make();
+  halfCircle.addCircle(origin.x, origin.y, width / 2);
+  halfCircle.trim(0.5, 1, false);
 
   return (
     <Canvas style={{ flex: 1 }}>
@@ -28,54 +29,49 @@ const Wallpaper = () => {
         <LinearGradient
           start={vec(0, 0)}
           end={vec(0, height)}
-          colors={["#1A0049", "#2F0604"]}
+          colors={["#013158", "#016579", "#016579", "#013158"]}
         />
       </Fill>
-      <Group>
-        <LinearGradient
-          start={vec(0, 0)}
-          end={vec(0, height)}
-          colors={["#5a5ec3", "#eba5c5", "#e1d4b7", "#e9b74c", "red"]}
+      <Path
+        path={halfCircle}
+        transform={[{ rotate: Math.PI / 6 }, { translateX: -width / 4 }]}
+        origin={origin}
+      >
+        <SweepGradient
+          c={origin}
+          transform={[
+            { scaleY: -1 },
+            { translateX: width / 4 },
+            { rotate: -Math.PI / 6 },
+          ]}
+          start={0}
+          end={180}
+          colors={["#000423", "#0C88B6", "#1DF7BC", "#D4FDAE"]}
+          origin={origin}
         />
-        <Shadow dx={0} dy={0} blur={10} color="black" />
-        {STRIPES.map((_, i) => {
-          return (
-            <Group
-              origin={origin}
-              transform={[
-                {
-                  scaleY: interpolate(
-                    i,
-                    [0, (length - 1) / 2, length - 1],
-                    [1, 0.6, 1]
-                  ),
-                },
-              ]}
-            >
-              <Mask
-                mask={
-                  <Rect x={i * width} y={0} width={width} height={height}>
-                    <LinearGradient
-                      start={vec(0, 0)}
-                      end={vec(0, height)}
-                      colors={["transparent", "black", "black", "transparent"]}
-                    />
-                  </Rect>
-                }
-              >
-                <Rect x={i * width} y={0} width={width} height={height} />
-              </Mask>
-            </Group>
-          );
-        })}
-        <Fill blendMode={"softLight"}>
-          <Turbulence freqX={1} freqY={1} octaves={3} />
-        </Fill>
-      </Group>
+      </Path>
+      <Path
+        path={halfCircle}
+        transform={[
+          { scaleY: -1 },
+          { rotate: -Math.PI / 6 },
+          { translateX: width / 4 },
+        ]}
+        origin={origin}
+      >
+        <SweepGradient
+          c={origin}
+          start={180}
+          end={360}
+          colors={["#043648", "#0C88B6", "#0C88B6", "#F592C7", "#F592C7"]}
+          transform={[{ translateX: -width / 4 }, { rotate: Math.PI / 6 }]}
+          origin={origin}
+        />
+      </Path>
     </Canvas>
   );
 };
 
-export default Wallpaper;
+export default Wallpaper2;
 
 const styles = StyleSheet.create({});
